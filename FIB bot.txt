@@ -1,0 +1,39 @@
+
+
+```python
+import requests
+from flask import Flask, request
+
+app = Flask(__name__)
+API_KEY = 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''
+API_URL = 'https://api.openai.com/v1/chat/completions'
+
+def get_chatbot_response(message):
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer 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{}'
+    }
+    data = {
+        'messages': [{'role': 'system', 'content': 'You are a fashion icon bot.'},
+                     {'role': 'user', 'content': message}]
+    }
+    response = requests.post(API_URL, headers=headers, json=data)
+    response_json = response.json()
+    return response_json['choices'][0]['message']['content']
+
+@app.route('/', methods=['POST'])
+def fashion_icon_bot():
+    user_message = request.form['message']
+    if user_message.lower().startswith('fashion'):
+        response = get_chatbot_response(user_message)
+        return response
+    else:
+        return "Sorry, I'm here to answer fashion-related questions only."
+
+if __name__ == '__main__':
+    app.run()
+```
+
+To use this code, you need to have Flask and requests installed. Additionally, you should replace `'your_chatgpt_api_key'` with your actual ChatGPT API key.
+
+This code sets up a basic Flask web server and defines the `/` route as the endpoint for receiving user messages. When a user sends a message to the endpoint, the code checks if the message starts with 'fashion'. If it does, it sends the message to the ChatGPT API for processing and returns the response. If the message does not start with 'fashion', it responds with a message indicating that only fashion-related questions are accepted.
